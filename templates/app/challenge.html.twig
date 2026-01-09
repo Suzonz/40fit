@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h2 class="text-4xl md:text-5xl font-bold mb-14 pt-10 text-gray-800 text-center underline decoration-solid">
+    Exercices
+</h2>
+
+<div class="max-w-6xl mx-auto space-y-16">
+
+    <section>
+
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            {% for challenge in challenges %}
+                <li class="relative bg-white border-[3px] border-black text-gray-800 text-lg px-6 py-6
+                           shadow-[6px_8px_0_0_rgba(0,0,0,0.85)]
+                           hover:translate-x-1 hover:translate-y-1
+                           hover:shadow-[3px_4px_0_0_rgba(0,0,0,0.85)]
+                           active:translate-x-2 active:translate-y-2
+                           active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]
+                           transition-all duration-150 text-center font-semibold cursor-pointer">
+
+                    <a href="{{ path('challenge_show', { id: challenge.id }) }}">
+                        {{ challenge.title }}
+                    </a>
+
+                </li>
+            {% endfor %}
+
+        </ul>
+
+    </section>
+
+</div>
+
+{% endblock %}

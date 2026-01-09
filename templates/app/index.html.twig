@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	<article class="w-full max-w-5xl mx-auto mt-10 flex flex-col items-center text-center">
+
+		<h2 class="text-3xl md:text-3xl font-bold mb-6 text-gray-800">
+			Évaluez simplement votre condition physique et prenez soin de votre santé après 40 ans.
+		</h2>
+
+		<p class="text-gray-700 text-xl md:text-3xl leading-relaxed mb-10">
+			Le challenge 40Fit s’adresse aux personnes de 40 ans et plus souhaitant faire le point sur leur forme physique. Il repose sur des objectifs simples et accessibles, répartis en force, endurance, mobilité et santé, sans recherche de performance extrême ni besoin de salle de sport. L’application 40Fit vous accompagne dans le suivi de votre progression et la visualisation de vos résultats dans le temps.
+		</p>
+
+		<div class="flex gap-6">
+			<a href="{{ path('app_login') }}" class="inline-block relative border-[3px] border-black text-green-800 text-xl px-8 py-3
+					          				  bg-white box-border shadow-[4px_6px_0_0_rgba(0,0,0,0.85)] hover:translate-x-1 hover:translate-y-1
+					          				  hover:shadow-[2px_3px_0_0_rgba(0,0,0,0.85)] active:translate-x-2 active:translate-y-2
+					          				  active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]transition-all duration-150">
+				Connexion
+			</a>
+
+			<a href="{{ path('app_register') }}" class="relative bg-green-800 border-[3px] border-black text-white text-xl px-8 py-3
+										         shadow-[4px_6px_0_0_rgba(0,0,0,0.85)] hover:translate-x-1 hover:translate-y-1
+										         hover:shadow-[2px_3px_0_0_rgba(0,0,0,0.85)] active:translate-x-2 active:translate-y-2
+										         active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)] transition-all duration-150">
+				Inscription
+			</a>
+
+		</div>
+
+	</article>
+
+
+{% endblock %}

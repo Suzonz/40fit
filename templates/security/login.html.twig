@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
 
 <h2 class="text-4xl md:text-5xl font-bold mb-14 pt-10 text-gray-800 text-center underline decoration-solid">
-    Login
+    Connexion
 </h2>
 
 <div class="max-w-xl mx-auto">
@@ -20,7 +20,8 @@
                 <div class="bg-red-100 border-[3px] border-black px-4 py-3
                             shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
                             text-red-800 font-semibold">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                    {# Un seul message : il ne révèle pas si l'e-mail a un compte #}
+                    E-mail ou mot de passe incorrect.
                 </div>
             {% endif %}
 
@@ -28,13 +29,13 @@
                 <div class="bg-green-100 border-[3px] border-black px-4 py-3
                             shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
                             text-green-800 font-semibold">
-                    You are logged in as {{ app.user.userIdentifier }},
-                    <a href="{{ logout_path() }}" class="underline font-bold">Logout</a>
+                    Session ouverte avec {{ app.user.userIdentifier }} —
+                    <a href="{{ logout_path() }}" class="underline font-bold">Déconnexion</a>
                 </div>
             {% endif %}
 
             <div>
-                <label for="username" class="block font-semibold mb-1 text-gray-800">Email</label>
+                <label for="username" class="block font-semibold mb-1 text-gray-800">E-mail</label>
                 <input type="email" value="{{ last_username }}" name="_username" id="username"
                     class="w-full border-[3px] border-black px-4 py-2
                            shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
@@ -45,7 +46,7 @@
             </div>
 
             <div>
-                <label for="password" class="block font-semibold mb-1 text-gray-800">Password</label>
+                <label for="password" class="block font-semibold mb-1 text-gray-800">Mot de passe</label>
                 <input type="password" name="_password" id="password"
                     class="w-full border-[3px] border-black px-4 py-2
                            shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
@@ -65,7 +66,7 @@
                        active:translate-x-2 active:translate-y-2
                        active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]
                        transition-all duration-150">
-                Sign in
+                Se connecter
             </button>
 
         </form>

@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 	<head>
 		<meta charset="UTF-8">
-		<title>
-			{% block title %}Welcome!
-			{% endblock %}
-		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{% block title %}40Fit{% endblock %} | 40Fit</title>
 		<script src="https://cdn.tailwindcss.com"></script>
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>"> {% block stylesheets %}{% endblock %}{% block javascripts %}{% endblock %}
-		</head>
-		<body>
-			{% include 'partials/header.html.twig' %}
-			{% block body %}{% endblock %}
-		</body>
-	</html>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>💪</text></svg>">
+		{% block stylesheets %}{% endblock %}
+		{% block javascripts %}{% endblock %}
+	</head>
+	<body class="pb-16">
+		{% include 'partials/header.html.twig' %}
+
+		{# Messages de confirmation (résultat enregistré, modifié, supprimé) #}
+		{% for message in app.flashes('success') %}
+			<div class="max-w-5xl mx-auto mt-6 px-4">
+				<p class="bg-green-100 border-[3px] border-black px-4 py-3 shadow-[4px_5px_0_0_rgba(0,0,0,0.85)] text-green-800 font-semibold">
+					{{ message }}
+				</p>
+			</div>
+		{% endfor %}
+
+		{% block body %}{% endblock %}
+	</body>
+</html>

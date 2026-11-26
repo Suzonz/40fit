@@ -31,9 +31,21 @@ class Challenge
     #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'challenge')]
     private Collection $evaluations;
 
+    #[ORM\Column]
+    private ?int $targetValue = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $unit = null;
+
+    /** Pour une course chronométrée, le meilleur résultat est le plus petit (le temps le plus court). */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $lowerIsBetter = false;
+
     public function __construct()
     {
         $this->evaluations = new ArrayCollection();
+        $this->targetValue = 0;
+        $this->unit = "";
     }
 
     public function getId(): ?int
@@ -105,5 +117,53 @@ class Challenge
         }
 
         return $this;
+    }
+
+    public function getTargetValue(): ?int
+    {
+        return $this->targetValue;
+    }
+
+    public function setTargetValue(int $targetValue): static
+    {
+        $this->targetValue = $targetValue;
+
+        return $this;
+    }
+
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(string $unit): static
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function isLowerBetter(): bool
+    {
+        return $this->lowerIsBetter;
+    }
+
+    public function setLowerIsBetter(bool $lowerIsBetter): static
+    {
+        $this->lowerIsBetter = $lowerIsBetter;
+
+        return $this;
+    }
+
+    /** Le résultat $a est-il meilleur que $b pour ce défi ? */
+    public function isBetter(float $a, float $b): bool
+    {
+        return $this->lowerIsBetter ? $a < $b : $a > $b;
+    }
+
+    /** L'objectif est-il atteint avec ce résultat ? */
+    public function isReachedBy(float $value): bool
+    {
+        return $this->lowerIsBetter ? $value <= $this->targetValue : $value >= $this->targetValue;
     }
 }

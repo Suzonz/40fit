@@ -1,0 +1,21 @@
+{#
+	Affichage d'un résultat avec son unité.
+	Les durées en secondes passent en minutes au-delà d'une minute : 1860 secondes → 31 min.
+	Utilisation : {% import 'partials/_result.html.twig' as result %} puis {{ result.value(1860, 'secondes') }}
+#}
+{% macro value(number, unit) %}
+	{%- if unit == 'secondes' and number >= 60 -%}
+		{%- set minutes = (number // 60) -%}
+		{%- set seconds = (number % 60)|round -%}
+		{{ minutes }} min{% if seconds > 0 %} {{ '%02d'|format(seconds) }} s{% endif %}
+	{%- else -%}
+		{{ number == number|round ? number|round : number|number_format(1, ',', ' ') }} {{ unit }}
+	{%- endif -%}
+{% endmacro %}
+
+{# Une barre de progression vers l'objectif (0 à 100 %) #}
+{% macro progress(percent) %}
+	<div class="w-full h-4 border-[3px] border-black bg-white" role="progressbar" aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100">
+		<div class="h-full {{ percent >= 100 ? 'bg-green-700' : 'bg-green-400' }}" style="width: {{ percent }}%"></div>
+	</div>
+{% endmacro %}

@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Challenge;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-
+/**
+ * L'accueil. L'inscription est dans RegistrationController, la connexion dans
+ * SecurityController, les défis dans ChallengeController.
+ */
 final class AppController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
@@ -17,20 +18,10 @@ final class AppController extends AbstractController
         return $this->render('app/index.html.twig');
     }
 
-    #[Route('/register', name: 'app_register')] //cette ligne est l'attribut
-    public function register(): Response
+    /** Ancienne adresse de la liste des défis. */
+    #[Route('/challenge', name: 'challenge')]
+    public function challengeList(): Response
     {
-        return $this->render('app/register.html.twig', [
-            'controller_name' => 'ConferenceController',
-        ]);
-    }
-
-    #[Route('/challenge', name: 'challenge')] //cette ligne est l'attribut
-    public function dashboard(EntityManagerInterface $manager): Response
-    {
-        $challenges = $manager->getRepository(Challenge::class)->findAll();
-        return $this->render('app/challenge.html.twig', [
-            'challenges' => $challenges,
-        ]);
+        return $this->redirectToRoute('challenge_index', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 }

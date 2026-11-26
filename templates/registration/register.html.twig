@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
 
 <h2 class="text-4xl md:text-5xl font-bold mb-14 pt-10 text-gray-800 text-center underline decoration-solid">
-    Register
+    Inscription
 </h2>
 
 <div class="max-w-xl mx-auto">
@@ -36,16 +36,24 @@
                                     transition-all'
                         }
                     }) }}
+                    {% if not field.vars.valid %}
+                        <div class="mt-2 text-red-800 font-semibold">{{ form_errors(field) }}</div>
+                    {% endif %}
                 </div>
             {% endfor %}
 
-            <div class="flex items-center gap-3">
-                {{ form_widget(registrationForm.agreeTerms, {
-                    attr: { class: 'w-5 h-5 border-[3px] border-black' }
-                }) }}
-                {{ form_label(registrationForm.agreeTerms, null, {
-                    label_attr: { class: 'font-semibold text-gray-800' }
-                }) }}
+            <div>
+                <div class="flex items-center gap-3">
+                    {{ form_widget(registrationForm.agreeTerms, {
+                        attr: { class: 'w-5 h-5 border-[3px] border-black' }
+                    }) }}
+                    {{ form_label(registrationForm.agreeTerms, null, {
+                        label_attr: { class: 'font-semibold text-gray-800' }
+                    }) }}
+                </div>
+                {% if not registrationForm.agreeTerms.vars.valid %}
+                    <div class="mt-2 text-red-800 font-semibold">{{ form_errors(registrationForm.agreeTerms) }}</div>
+                {% endif %}
             </div>
 
             <button type="submit"
@@ -56,7 +64,7 @@
                        active:translate-x-2 active:translate-y-2
                        active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]
                        transition-all duration-150">
-                Register
+                Créer mon compte
             </button>
 
         {{ form_end(registrationForm) }}

@@ -1,68 +1,69 @@
 {% extends 'base.html.twig' %}
+{% import 'partials/_result.html.twig' as result %}
 
-{% block title %}Défi :
-	{{ challenge.title }}
-{% endblock %}
+{% block title %}Défi : {{ challenge.title }}{% endblock %}
 
 {% block body %}
 
-	<div class="max-w-5xl mx-auto mt-10 px-4">
-		<article class="relative bg-white border-[3px] border-black text-gray-800 px-8 py-8
-																                    shadow-[6px_8px_0_0_rgba(0,0,0,0.85)]">
+<div class="max-w-5xl mx-auto mt-6 px-4 space-y-10">
 
-			<div class="mb-6 text-center">
-				<h2 class="text-3xl md:text-4xl font-bold mb-4">
-					{{ challenge.title }}
-				</h2>
+    <p><a href="{{ path('challenge_index') }}" class="underline font-semibold">&larr; Tous les défis</a></p>
 
-				<p class="text-gray-700 text-lg md:text-xl leading-relaxed">
-					{{ challenge.description }}
-				</p>
-			</div>
+    <article class="relative bg-white border-[3px] border-black text-gray-800 px-8 py-8
+                    shadow-[6px_8px_0_0_rgba(0,0,0,0.85)] rounded-md">
 
-			<div>
-				{{ form_start(evaluationReportForm, {'attr': {'class': 'space-y-6'}}) }}
-				{% if form_errors(evaluationReportForm.value) %}
-					<div class="bg-red-100 border-[3px] border-black px-4 py-3
-																												                            shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
-																												                            text-red-800 font-semibold">
-						{{ form_errors(evaluationReportForm.value) }}
-					</div>
-				{% endif %}
+        <div class="mb-6 text-center">
+            <p class="text-gray-600 font-semibold mb-2">{{ challenge.category.name }}</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                {{ challenge.title }}
+            </h2>
+            <p class="text-gray-700 text-lg md:text-xl leading-relaxed">
+                {{ challenge.description }}
+            </p>
+            <p class="mt-4 text-xl font-bold">
+                Objectif : {{ challenge.lowerBetter ? 'moins de ' }}{{ result.value(challenge.targetValue, challenge.unit) }}
+            </p>
+        </div>
 
-				<div>
-					{{ form_label(evaluationReportForm.value, null, { 
-        label_attr: { class: 'block font-semibold mb-1 text-gray-800' } 
-    }) }}
+        <a href="{{ path('challenge_evaluations_create', { id: challenge.id }) }}"
+           class="block w-full mt-6 bg-green-800 text-white text-center border-[3px] border-black py-3 text-lg font-bold
+                  shadow-[6px_8px_0_0_rgba(0,0,0,0.85)]
+                  hover:translate-x-1 hover:translate-y-1 hover:shadow-[3px_4px_0_0_rgba(0,0,0,0.85)]
+                  active:translate-x-2 active:translate-y-2 active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]
+                  transition-all duration-150 rounded">
+            Ajouter un résultat
+        </a>
+    </article>
 
-					{{ form_widget(evaluationReportForm.value, {
-        attr: {
-            class: 'w-full border-[3px] border-black px-4 py-2
-                    shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
-                    focus:outline-none focus:translate-x-1 focus:translate-y-1
-                    focus:shadow-[2px_3px_0_0_rgba(0,0,0,0.85)]
-                    transition-all'
-        }
-    }) }}
-				</div>
+    <section>
+        <h3 class="text-2xl font-bold mb-6 text-gray-800">Mes résultats</h3>
 
+        {% if evaluations is empty %}
+            <p class="text-gray-700 text-lg">Pas encore de résultat pour ce défi.</p>
+        {% else %}
+            <ul class="space-y-4">
+                {% for evaluation in evaluations %}
+                    <li class="bg-white border-[3px] border-black px-6 py-4 shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
+                               flex flex-wrap items-center gap-4">
+                        <span class="w-28 text-gray-600">{{ evaluation.createdAt|date('d/m/Y') }}</span>
+                        <span class="text-xl font-bold min-w-32">{{ result.value(evaluation.value, challenge.unit) }}</span>
+                        <div class="flex-1 min-w-40">{{ result.progress(evaluation.progress) }}</div>
+                        <span class="w-36 font-semibold">
+                            {{ evaluation.progress >= 100 ? 'Objectif atteint' : evaluation.progress ~ ' % de l\'objectif' }}
+                        </span>
+                        <a href="{{ path('challenge_evaluations_update', { id: challenge.id, evaluationId: evaluation.id }) }}"
+                           class="underline font-semibold">Modifier</a>
+                        <form method="post" action="{{ path('challenge_evaluations_delete', { id: challenge.id, evaluationId: evaluation.id }) }}"
+                              onsubmit="return confirm('Supprimer ce résultat ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-evaluation-' ~ evaluation.id) }}">
+                            <button type="submit" class="underline font-semibold text-red-800">Supprimer</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
 
-				<button type="submit" class="w-full mt-6 bg-white border-[3px] border-black py-3 text-lg font-bold
-												                       shadow-[6px_8px_0_0_rgba(0,0,0,0.85)]
-												                       hover:translate-x-1 hover:translate-y-1
-												                       hover:shadow-[3px_4px_0_0_rgba(0,0,0,0.85)]
-												                       active:translate-x-2 active:translate-y-2
-												                       active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]
-												                       transition-all duration-150">
-					Enregistrer
-				</button>
-
-				{{ form_end(evaluationReportForm) }}
-
-			</div>
-
-		</article>
-
-	</div>
+</div>
 
 {% endblock %}

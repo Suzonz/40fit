@@ -1,0 +1,50 @@
+{# Formulaire d'un résultat (ajout ou modification) : variables challenge et evaluationForm #}
+{% import 'partials/_result.html.twig' as result %}
+
+<p class="text-center text-gray-700 text-lg mb-6">
+    Objectif : {{ challenge.lowerBetter ? 'moins de ' }}{{ result.value(challenge.targetValue, challenge.unit) }}
+</p>
+
+{{ form_start(evaluationForm, { attr: { class: 'space-y-6', novalidate: 'novalidate' } }) }}
+
+    <div>
+        {{ form_label(evaluationForm.value, null, { label_attr: { class: 'block text-xl font-semibold mb-2 text-gray-800' } }) }}
+
+        <div class="flex items-center gap-3 w-full">
+            {{ form_widget(evaluationForm.value, {
+                attr: {
+                    min: 0, step: 'any', placeholder: 'Entrez votre résultat', autofocus: true,
+                    class: 'flex-1 border-[3px] border-black px-4 py-2
+                            shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
+                            focus:outline-none focus:translate-x-1 focus:translate-y-1
+                            focus:shadow-[2px_3px_0_0_rgba(0,0,0,0.85)]
+                            transition-all duration-150 rounded'
+                }
+            }) }}
+            <span class="text-gray-700 font-medium whitespace-nowrap">{{ challenge.unit }}</span>
+        </div>
+
+        {% if not evaluationForm.value.vars.valid %}
+            <div class="bg-red-100 border-[3px] border-black px-4 py-3
+                        shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
+                        text-red-800 font-semibold mt-3 rounded">
+                {{ form_errors(evaluationForm.value) }}
+            </div>
+        {% endif %}
+    </div>
+
+    {{ form_widget(evaluationForm.submit, {
+        attr: {
+            class: 'w-full mt-2 bg-green-800 text-white border-[3px] border-black py-3 text-lg font-bold
+                    shadow-[6px_8px_0_0_rgba(0,0,0,0.85)]
+                    hover:translate-x-1 hover:translate-y-1 hover:shadow-[3px_4px_0_0_rgba(0,0,0,0.85)]
+                    active:translate-x-2 active:translate-y-2 active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]
+                    transition-all duration-150 rounded'
+        }
+    }) }}
+
+{{ form_end(evaluationForm) }}
+
+<p class="mt-6 text-center">
+    <a href="{{ path('challenge_show', { id: challenge.id }) }}" class="underline font-semibold">Annuler</a>
+</p>

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% import 'partials/_result.html.twig' as result %}
+
+{% block title %}Défis{% endblock %}
+
+{% block body %}
+
+<h2 class="text-4xl md:text-5xl font-bold mb-10 pt-4 text-gray-800 text-center underline decoration-solid">
+    Défis
+</h2>
+
+<div class="max-w-6xl mx-auto px-4 space-y-14">
+
+    {% for category, challenges in challengesByCategory %}
+        <section>
+            <h3 class="text-2xl font-bold mb-6 text-gray-800">{{ category }}</h3>
+
+            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for challenge in challenges %}
+                    <li>
+                        <a href="{{ path('challenge_show', { id: challenge.id }) }}"
+                           class="block h-full relative bg-white border-[3px] border-black text-gray-800 px-6 py-6
+                                  shadow-[6px_8px_0_0_rgba(0,0,0,0.85)]
+                                  hover:translate-x-1 hover:translate-y-1
+                                  hover:shadow-[3px_4px_0_0_rgba(0,0,0,0.85)]
+                                  active:translate-x-2 active:translate-y-2
+                                  active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]
+                                  transition-all duration-150 text-center">
+                            <span class="block text-lg font-semibold">{{ challenge.title }}</span>
+                            <span class="block mt-2 text-gray-600">
+                                Objectif : {{ challenge.lowerBetter ? 'moins de ' }}{{ result.value(challenge.targetValue, challenge.unit) }}
+                            </span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% else %}
+        <p class="text-center text-xl text-gray-700">
+            Aucun défi pour l'instant. Chargez-les avec <code>php bin/console app:import-challenges</code>.
+        </p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

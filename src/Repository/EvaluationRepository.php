@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Challenge;
 use App\Entity\Evaluation;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,36 @@ class EvaluationRepository extends ServiceEntityRepository
         parent::__construct($registry, Evaluation::class);
     }
 
-    //    /**
-    //     * @return Evaluation[] Returns an array of Evaluation objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Tous les résultats d'un utilisateur, avec leur défi et sa catégorie,
+     * du plus récent au plus ancien (tableau de bord).
+     *
+     * @return Evaluation[]
+     */
+    public function findByUser(User $user): array
+    {
+        return $this->createQueryBuilder('e')
+            ->addSelect('c', 'cat')
+            ->join('e.challenge', 'c')
+            ->join('c.category', 'cat')
+            ->andWhere('e.associatedUser = :user')
+            ->setParameter('user', $user)
+            ->orderBy('e.createdAt', 'DESC')
+            ->addOrderBy('e.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Evaluation
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Les résultats d'un utilisateur à un défi, du plus récent au plus ancien.
+     *
+     * @return Evaluation[]
+     */
+    public function findByUserAndChallenge(User $user, Challenge $challenge): array
+    {
+        return $this->findBy(
+            ['associatedUser' => $user, 'challenge' => $challenge],
+            ['createdAt' => 'DESC', 'id' => 'DESC']
+        );
+    }
 }

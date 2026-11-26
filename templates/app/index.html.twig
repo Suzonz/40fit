@@ -12,19 +12,20 @@
 			Le challenge 40Fit s’adresse aux personnes de 40 ans et plus souhaitant faire le point sur leur forme physique. Il repose sur des objectifs simples et accessibles, répartis en force, endurance, mobilité et santé, sans recherche de performance extrême ni besoin de salle de sport. L’application 40Fit vous accompagne dans le suivi de votre progression et la visualisation de vos résultats dans le temps.
 		</p>
 
-		<div class="flex gap-6">
-			<a href="{{ path('app_login') }}" class="inline-block relative border-[3px] border-black text-green-800 text-xl px-8 py-3
+		<div class="flex flex-wrap justify-center gap-6">
+			{# Connectée : on va directement à ses défis ; sinon, connexion ou inscription #}
+			<a href="{{ app.user ? path('challenge_index') : path('app_login') }}" class="inline-block relative border-[3px] border-black text-green-800 text-xl px-8 py-3
 					          				  bg-white box-border shadow-[4px_6px_0_0_rgba(0,0,0,0.85)] hover:translate-x-1 hover:translate-y-1
 					          				  hover:shadow-[2px_3px_0_0_rgba(0,0,0,0.85)] active:translate-x-2 active:translate-y-2
-					          				  active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)]transition-all duration-150">
-				Connexion
+					          				  active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)] transition-all duration-150">
+				{{ app.user ? 'Voir les défis' : 'Connexion' }}
 			</a>
 
-			<a href="{{ path('app_register') }}" class="relative bg-green-800 border-[3px] border-black text-white text-xl px-8 py-3
+			<a href="{{ app.user ? path('app_dashboard') : path('app_register') }}" class="relative bg-green-800 border-[3px] border-black text-white text-xl px-8 py-3
 										         shadow-[4px_6px_0_0_rgba(0,0,0,0.85)] hover:translate-x-1 hover:translate-y-1
 										         hover:shadow-[2px_3px_0_0_rgba(0,0,0,0.85)] active:translate-x-2 active:translate-y-2
 										         active:shadow-[0_1px_0_0_rgba(0,0,0,0.85)] transition-all duration-150">
-				Inscription
+				{{ app.user ? 'Mon tableau de bord' : 'Inscription' }}
 			</a>
 
 		</div>

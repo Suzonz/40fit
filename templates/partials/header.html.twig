@@ -1,9 +1,36 @@
-{% block header %}
-	{% block title %}
-		<header class="bg-white">
-			<div class="flex justify-center px-10 py-4 mt-15">
-				<h1 class="text-8xl font-bold bg-transparent">40Fit</h1>
-			</div>
-		</header>
-	{% endblock %}
-{% endblock %}
+{# Forme commune des boutons du menu ; la couleur est ajoutée à part (une seule par bouton,
+   sinon Tailwind garde l'une ou l'autre au hasard de l'ordre de ses règles) #}
+{% set link = 'px-4 py-2 border-[3px] border-black font-semibold shadow-[3px_4px_0_0_rgba(0,0,0,0.85)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_2px_0_0_rgba(0,0,0,0.85)] transition-all duration-150' %}
+{% set white = link ~ ' bg-white text-black' %}
+{% set current = link ~ ' bg-green-100 text-black' %}
+{% set green = link ~ ' bg-green-800 text-white' %}
+{% set route = app.request.attributes.get('_route') %}
+
+<header class="bg-white">
+	<div class="flex justify-center px-10 pt-4 mt-15">
+		<a href="{{ path('app_home') }}">
+			<h1 class="text-6xl md:text-8xl font-bold bg-transparent">40Fit</h1>
+		</a>
+	</div>
+
+	{# L'accueil a ses propres grands boutons : le menu n'y répète pas les mêmes liens #}
+	{% set home = route == 'app_home' %}
+	<nav class="flex flex-wrap justify-center gap-4 px-4 py-6" aria-label="Menu principal">
+		{% if app.user %}
+			{% if not home %}
+				{# La page en cours est surlignée en vert clair #}
+				<a href="{{ path('app_dashboard') }}" class="{{ route == 'app_dashboard' ? current : white }}">Tableau de bord</a>
+				<a href="{{ path('challenge_index') }}" class="{{ route starts with 'challenge_' ? current : white }}">Défis</a>
+			{% endif %}
+			<a href="{{ path('app_logout') }}" class="{{ white }}">Déconnexion ({{ app.user.firstName }})</a>
+		{% elseif not home %}
+			{# Sur la page de connexion, on propose l'inscription, et inversement #}
+			{% if route != 'app_login' %}
+				<a href="{{ path('app_login') }}" class="{{ white }}">Connexion</a>
+			{% endif %}
+			{% if route != 'app_register' %}
+				<a href="{{ path('app_register') }}" class="{{ green }}">Inscription</a>
+			{% endif %}
+		{% endif %}
+	</nav>
+</header>

@@ -2,25 +2,30 @@
 
 namespace App\Form;
 
-use App\Entity\Challenge;
 use App\Entity\Evaluation;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EvaluationReportType extends AbstractType
+/**
+ * Le résultat d'un défi (répétitions, secondes, minutes… selon le défi).
+ * Les règles de validation sont sur l'entité Evaluation.
+ */
+class EvaluationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('value', NumberType::class)
-            ->add('challenge', EntityType::class, [
-                'class' => Challenge::class,
-                'choice_label' => 'id',
+            ->add('value', NumberType::class, [
+                'label' => 'Mon résultat',
+                'html5' => true,
+                'attr' => ['min' => 0, 'step' => 'any', 'placeholder' => 'Entrez votre résultat'],
             ])
-        ;
+            ->add('submit', SubmitType::class, [
+                'label' => 'Enregistrer',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

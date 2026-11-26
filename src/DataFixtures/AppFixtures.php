@@ -2,48 +2,22 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Challenge;
-use App\Entity\ChallengeCategory;
+use App\services\ChallengeHandler;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-
+/**
+ * Les défis et leurs catégories, depuis data/challenges.json
+ * (le même import que la commande app:import-challenges).
+ */
 class AppFixtures extends Fixture
 {
     public function __construct(
-        private readonly ParameterBagInterface $params
+        private readonly ChallengeHandler $challengeHandler
     ) {}
-
-
 
     public function load(ObjectManager $manager): void
     {
-
-        $projectDir = $this->params->get('kernel.project_dir');
-        $jsonFilePath = $projectDir . '/data/challenges.json';
-        $challenges = json_decode(file_get_contents($jsonFilePath), true);
-
-        foreach ($challenges as $challengeData) {
-            $categoryName = $challengeData['categoryName'];
-            $category =  $manager->getRepository(ChallengeCategory::class)->findOneBy([
-                'name' => $categoryName
-            ]);
-
-            if (!$category) {
-                $category = new ChallengeCategory();
-                $category->setName($categoryName);
-                $manager->persist($category);
-                $manager->flush();
-            }
-
-            $challenge = new Challenge();
-            $challenge->setTitle($challengeData['title']);
-            $challenge->setDescription($challengeData['description']);
-            $challenge->setCategory($category);
-            $manager->persist($challenge);
-        }
-
-        $manager->flush();
+        $this->challengeHandler->import($manager);
     }
 }

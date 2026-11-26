@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Challenge;
+use App\Entity\ChallengeCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,25 @@ class ChallengeRepository extends ServiceEntityRepository
         parent::__construct($registry, Challenge::class);
     }
 
-//    /**
-//     * @return Challenge[] Returns an array of Challenge objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Les défis d'une catégorie (ou tous si $category est null),
+     * rangés par catégorie puis dans l'ordre du fichier.
+     *
+     * @return Challenge[]
+     */
+    public function findByCategory(?ChallengeCategory $category = null): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->addSelect('cat')
+            ->join('c.category', 'cat')
+            ->orderBy('cat.id', 'ASC')
+            ->addOrderBy('c.id', 'ASC');
 
-//    public function findOneBySomeField($value): ?Challenge
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($category !== null) {
+            $qb->andWhere('c.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Challenge;
 use App\Entity\Evaluation;
 use App\Entity\User;
+use App\Form\ChallengeFilterType;
 use App\Form\EvaluationFormType;
+use App\Repository\ChallengeCategoryRepository;
 use App\Repository\ChallengeRepository;
 use App\Repository\EvaluationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,18 +25,38 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class ChallengeController extends AbstractController
 {
-    /** La liste des défis, rangés par catégorie. */
+    /** En session : l'id de la catégorie choisie dans le filtre de la liste. */
+    private const FILTER_SESSION_KEY = 'challenge-filter-category-id';
+
+    /**
+     * La liste des défis, rangés par catégorie, avec un filtre par catégorie.
+     * Le choix du filtre est gardé en session : en revenant sur la liste, il est toujours appliqué.
+     */
     #[Route('/', name: 'index')]
-    public function index(ChallengeRepository $challengeRepository): Response
-    {
-        $challenges = $challengeRepository->findBy([], ['category' => 'ASC', 'id' => 'ASC']);
+    public function index(
+        Request $request,
+        ChallengeRepository $challengeRepository,
+        ChallengeCategoryRepository $challengeCategoryRepository,
+    ): Response {
+        $session = $request->getSession();
+        $categoryId = $session->get(self::FILTER_SESSION_KEY);
+        $category = $categoryId ? $challengeCategoryRepository->find($categoryId) : null;
+
+        $filterForm = $this->createForm(ChallengeFilterType::class, ['category' => $category]);
+        $filterForm->handleRequest($request);
+
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+            $category = $filterForm->get('category')->getData();
+            $session->set(self::FILTER_SESSION_KEY, $category?->getId());
+        }
 
         $byCategory = [];
-        foreach ($challenges as $challenge) {
+        foreach ($challengeRepository->findByCategory($category) as $challenge) {
             $byCategory[$challenge->getCategory()->getName()][] = $challenge;
         }
 
         return $this->render('challenge/index.html.twig', [
+            'filterForm' => $filterForm,
             'challengesByCategory' => $byCategory,
         ]);
     }

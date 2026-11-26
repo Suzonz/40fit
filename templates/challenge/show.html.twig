@@ -46,7 +46,7 @@
                     <li class="bg-white border-[3px] border-black px-6 py-4 shadow-[4px_5px_0_0_rgba(0,0,0,0.85)]
                                flex flex-wrap items-center gap-4">
                         <span class="w-28 text-gray-600">{{ evaluation.createdAt|date('d/m/Y') }}</span>
-                        <span class="text-xl font-bold min-w-32">{{ result.value(evaluation.value, challenge.unit) }}</span>
+                        <span class="test-evaluation-value text-xl font-bold min-w-32">{{ result.value(evaluation.value, challenge.unit) }}</span>
                         <div class="flex-1 min-w-40">{{ result.progress(evaluation.progress) }}</div>
                         <span class="w-36 font-semibold">
                             {{ evaluation.progress >= 100 ? 'Objectif atteint' : evaluation.progress ~ ' % de l\'objectif' }}
